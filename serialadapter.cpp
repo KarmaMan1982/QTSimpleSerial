@@ -55,6 +55,22 @@ void SerialAdapter::readData()
    //QTextStream(stdout) << "readData" << endl;
    //qDebug() << readAll();
    QByteArray data = readAll();
+   QJsonObject inputObject;
+   for(int i=0;i<data.length();i++){
+       if(data[i] == CTRL_SOH){
+           inputPackage.clear();
+           inputPackage.append(data[i]);
+       }else if(data[i] == CTRL_EOT){
+           inputPackage.append(data[i]);
+           inputObject = jsonParser.ByteArrayTOJsonObject(inputPackage);
+           QTextStream(stdout) << "Type: " + inputObject["type"].toString() << endl;
+           QTextStream(stdout) << "Name: " + inputObject["name"].toString() << endl;
+       }else{
+           inputPackage.append(data[i]);
+       }
+   }
+
+
    QFile file("in.log");
    QFile IOfile("inout.log");
    QDateTime now = QDateTime::currentDateTime();
