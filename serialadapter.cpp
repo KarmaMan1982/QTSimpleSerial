@@ -39,6 +39,9 @@ SerialAdapter::~SerialAdapter(){
     QTextStream(stdout) << "Close SerialAdapter!" << endl;
     close();
 }
+void SerialAdapter::intervallRunner(){
+    sendData(jsonParser.JsonDocumentTOByteArray(mcController.Starter()));
+}
 void SerialAdapter::sendData(QByteArray inputData){
     if (setWriteable == true){
         write(inputData);
@@ -48,6 +51,21 @@ void SerialAdapter::sendData(QByteArray inputData){
     }
     flush();
     //close();
+    QFile file("out.log");
+    QFile IOfile("inout.log");
+    QDateTime now = QDateTime::currentDateTime();
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Append)){
+    QTextStream out(&file);
+    out << "Output: " + now.toString("dd.MM.yyyy HH:mm:ss:zzz") + " " + inputData << endl;
+    file.close();
+    }
+
+    if (IOfile.open(QIODevice::WriteOnly | QIODevice::Append)){
+    QTextStream out(&IOfile);
+    out << "Output: " + now.toString("dd.MM.yyyy HH:mm:ss:zzz") + " " + inputData << endl;
+    IOfile.close();
+    }
 }
 
 void SerialAdapter::readData()
@@ -63,8 +81,7 @@ void SerialAdapter::readData()
        }else if(data[i] == CTRL_EOT){
            inputPackage.append(data[i]);
            inputObject = jsonParser.ByteArrayTOJsonObject(inputPackage);
-           QTextStream(stdout) << "Type: " + inputObject["type"].toString() << endl;
-           QTextStream(stdout) << "Name: " + inputObject["name"].toString() << endl;
+           mcController.ControlInputData(inputObject);
        }else{
            inputPackage.append(data[i]);
        }

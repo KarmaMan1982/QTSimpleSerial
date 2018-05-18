@@ -2,6 +2,7 @@
 #define SERIALADAPTER_H
 #include <QtSerialPort/QSerialPort>
 #include "jsonparser.h"
+#include "mccontroller.h"
 
 #define CTRL_SOH	0x01
 #define CTRL_STX	0x02
@@ -18,10 +19,12 @@ public:
     ~SerialAdapter();
     virtual void init();
     void sendData(QByteArray);
+    void intervallRunner();
 private:
     bool setWriteable;
     QByteArray inputPackage;
     JSONParser jsonParser;
+    MCController mcController;
 public slots:
     void readData();
 };

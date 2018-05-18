@@ -18,8 +18,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     serialadapter.cpp \
-    jsonparser.cpp
+    jsonparser.cpp \
+    mccontroller.cpp
 
 HEADERS += \
     serialadapter.h \
-    jsonparser.h
+    jsonparser.h \
+    mccontroller.h
